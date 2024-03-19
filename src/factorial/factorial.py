@@ -23,6 +23,11 @@ def factorial(num):
 if len(sys.argv) == 0:
    print("Debe informar un número!")
    sys.exit()
-num=int(sys.argv[1])
+num=int(input("Número: "))
+
+if (num < 4 or num > 8):
+    print("Rango es entre 4 y 8")
+    exit()
+
 print("Factorial ",num,"! es ", factorial(num)) 
 
