@@ -1,5 +1,7 @@
 import openai
 
+consulta = input("Ingrese su consulta:")
+
 response = openai.chat.completions.create(
 model="gpt-3.5-turbo-0125",
 messages=[
@@ -11,7 +13,7 @@ messages=[
 "content" : "usertask" },
 {
 "role": "user",
-"content": "userquery" }
+"content": consulta }
 ],
 temperature=1,
 max_tokens=4096,
