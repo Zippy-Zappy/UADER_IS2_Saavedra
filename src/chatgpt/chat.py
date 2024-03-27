@@ -1,4 +1,5 @@
 import openai
+
 response = openai.chat.completions.create(
 model="gpt-3.5-turbo-0125",
 messages=[
