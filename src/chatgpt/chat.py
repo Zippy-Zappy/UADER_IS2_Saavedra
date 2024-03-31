@@ -1,46 +1,58 @@
-import readline #permite leer input de teclas
+import sys
 import openai
 
 try:
-    while True: #para que el programa corra continuamente (a no ser que se aprete Ctrl + C) - esto ya que la consigna pide
-                #que se pueda interrumpir el programa con la tecla arriba, de otro modo
-                #no se podría ya que el programa simplemente terminaría y nunca llega a utilizarse consulta_anterior
-        try:
-            consulta = input("Ingrese su consulta:")
+    openai.api_key = ""
 
-            if consulta == "\033[A": #se refiere a cursor up
-                consulta = consulta_anterior 
+    buffer = []
+    if "--convers" in sys.argv:
 
-            response = openai.chat.completions.create(
-            model="gpt-3.5-turbo-0125",
-            messages=[
-            {
-            "role": "system",
-            "content": "context" },
-            {
-            "role": "user",
-            "content" : "usertask" },
-            {
-            "role": "user",
-            "content": consulta }
-            ],
-            temperature=1,
-            max_tokens=4096,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-            )
-            print(f"Su consulta fue {consulta}. Procesando...")
+        while True: #para que el programa corra continuamente (a no ser que se aprete Ctrl + C) - esto ya que la consigna pide
+                    #que se pueda interrumpir el programa con la tecla arriba, de otro modo
+                    #no se podría ya que el programa simplemente terminaría y nunca llega a utilizarse consulta_anterior
+            try:
+                consulta = input("Ingrese su consulta:")
 
-            print(f"ChatGPT dice: {response.choices[0].message.content}")
+                buffer.append(consulta)
+                contexto = "\n".join(buffer)
 
-            consulta_anterior = consulta
+                if consulta == "\033[A": #se refiere a cursor up
+                    consulta = consulta_anterior 
 
-        except KeyboardInterrupt:
-            print("\nUsted presionó Control + C, lo que interrumió el programa.")
-            break
-        except Exception as ex:
-            print(f"Error: {ex}")
+                response = openai.chat.completions.create(
+                model="gpt-3.5-turbo-0125",
+                messages=[
+                {
+                "role": "system",
+                "content": contexto},
+                {
+                "role": "user",
+                "content" : "usertask" },
+                {
+                "role": "user",
+                "content": consulta }
+                ],
+                temperature=1,
+                max_tokens=100,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+                )
+                print(f"Su consulta fue {consulta}. Procesando...")
+
+                respuesta = response.choices[0].message.content
+
+                print(f"ChatGPT dice: {respuesta}")
+                
+                buffer.append(respuesta)
+
+                consulta_anterior = consulta
+
+            except KeyboardInterrupt:
+                print("\nUsted presionó Control + C, lo que interrumpió el programa.")
+                break
+            except Exception as ex:
+                print(f"Error: {ex}")
 
 except Exception as ex:
     print(f"Error: {ex}")
