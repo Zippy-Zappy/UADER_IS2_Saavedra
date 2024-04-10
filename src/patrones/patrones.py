@@ -221,4 +221,174 @@ if __name__ == "__main__":
     generar_factura(FactoryExento(), 1000)
 
 print()
-print("Consigna 6:")
+print("Consigna 5:")
+
+class Builder(ABC):
+    """
+    The Builder interface specifies methods for creating the different parts of
+    the Product objects.
+    """
+
+    @property
+    @abstractmethod
+    def product(self) -> None:
+        pass
+
+    @abstractmethod
+    def produce_body(self) -> None:
+        pass
+
+    @abstractmethod
+    def produce_wing_1(self) -> None:
+        pass
+
+    @abstractmethod
+    def produce_wing_2(self) -> None:
+        pass
+
+    @abstractmethod
+    def produce_turbine_1(self) -> None:
+        pass
+
+    @abstractmethod
+    def produce_turbine_2(self) -> None:
+        pass
+
+    @abstractmethod
+    def produce_undercarriage(self) -> None:
+        pass
+
+class Product():
+    """
+    It makes sense to use the Builder pattern only when your products are quite
+    complex and require extensive configuration.
+
+    Unlike in other creational patterns, different concrete builders can produce
+    unrelated products. In other words, results of various builders may not
+    always follow the same interface.
+    """
+
+    def __init__(self) -> None:
+        self.parts = []
+
+    def add(self, part: any) -> None:
+        self.parts.append(part)
+
+    def list_parts(self) -> None:
+        print(f"Partes del producto: {', '.join(self.parts)}", end="")
+
+#concrete builder, implementa los pasos
+class AvionBuilder(Builder):
+    def __init__(self) -> None:
+        """
+        para que contenga un producto vacío
+        """
+        self.reset()
+
+    def reset(self) -> None:
+        self._product = Product()
+
+    @property
+    def product(self) -> Product:
+        """
+        Concrete Builders are supposed to provide their own methods for
+        retrieving results. That's because various types of builders may create
+        entirely different products that don't follow the same interface.
+        Therefore, such methods cannot be declared in the base Builder interface
+        (at least in a statically typed programming language).
+
+        Usually, after returning the end result to the client, a builder
+        instance is expected to be ready to start producing another product.
+        That's why it's a usual practice to call the reset method at the end of
+        the `getProduct` method body. However, this behavior is not mandatory,
+        and you can make your builders wait for an explicit reset call from the
+        client code before disposing of the previous result.
+        """
+        product = self._product
+        self.reset()
+        return product
+
+    def produce_body(self) -> None:
+        self._product.add("Body")
+
+    def produce_wing_1(self) -> None:
+        self._product.add("Ala 1")
+
+    def produce_wing_2(self) -> None:
+        self._product.add("Ala 2")
+
+    def produce_turbine_1(self) -> None:
+        self._product.add("Turbina 1")
+    
+    def produce_turbine_2(self) -> None:
+        self._product.add("Turbina 2")
+    
+    def produce_undercarriage(self) -> None:
+        self._product.add("Tren de aterrizaje")
+
+#el director, ejecuta los pasos en cierta secuencia. Es opcional.
+class Director:
+    def __init__(self) -> None:
+        self._builder = None
+
+    @property
+    def builder(self) -> Builder:
+        return self._builder
+
+    @builder.setter
+    def builder(self, builder: Builder) -> None:
+        """
+        The Director works with any builder instance that the client code passes
+        to it. This way, the client code may alter the final type of the newly
+        assembled product.
+        """
+        self._builder = builder
+
+    """
+    The Director can construct several product variations using the same
+    building steps.
+    """
+
+    def build_minimal_viable_product(self) -> None:
+        self.builder.produce_body()
+
+    def build_full_featured_product(self) -> None:
+        self.builder.produce_wing_1()
+        self.builder.produce_wing_2()
+        self.builder.produce_turbine_1()
+        self.builder.produce_turbine_2()
+        self.builder.produce_undercarriage()
+
+    def build_parcial(self) -> None:
+        self.builder.produce_wing_2()
+
+if __name__ == "__main__":
+    """
+    The client code creates a builder object, passes it to the director and then
+    initiates the construction process. The end result is retrieved from the
+    builder object.
+    """
+
+    director = Director()
+    builder = AvionBuilder()
+    director.builder = builder
+
+    print("Producto básico: ")
+    director.build_minimal_viable_product()
+    builder.product.list_parts()
+
+    print("\n")
+
+    print("Producto completo: ")
+    director.build_full_featured_product()
+    builder.product.list_parts()
+
+    print("\n")
+
+    # Remember, the Builder pattern can be used without a Director class.
+    print("Custom product: ")
+    builder.produce_wing_1()
+    builder.produce_wing_2()
+    builder.product.list_parts()
+
+    print("\n")
