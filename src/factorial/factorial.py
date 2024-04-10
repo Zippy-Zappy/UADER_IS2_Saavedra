@@ -35,4 +35,3 @@ if (num < inf_dos or num > 60): #(num > 1 or num < inf) or
     exit()
 
 print("Factorial ",num,"! es ", factorial(num)) 
-
