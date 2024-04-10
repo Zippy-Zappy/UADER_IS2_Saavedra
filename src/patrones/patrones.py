@@ -168,3 +168,57 @@ if __name__ == "__main__":
     print()
     print("\nUsted se dirigirá al local.")
     client_code(ConcreteFactory3())
+
+
+print()
+print("Consigna 4:")
+class Factura:
+    def __init__(self, importe):
+        self.importe = importe
+    
+#utiliza el Factory Method.
+class FacturaFactory(ABC):
+    def crear_factura(self, importe):
+        pass
+
+#Concrete Factories    
+class FacturaIVAResponsable(Factura):
+    def __str__(self):
+        return f"Factura IVA Responsable, importe: ${self.importe}"
+
+class FacturaIVANoInscripto(Factura):
+    def __str__(self):
+        return f"Factura IVA No Inscripto, importe: ${self.importe}"
+
+class FacturaIVAExento(Factura):
+    def __str__(self):
+        return f"Factura IVA Exento, importe: ${self.importe}"
+
+#implementación de interfaz FacturaFactory
+class FactoryResponsable(FacturaFactory):
+    def crear_factura(self, importe):
+        return FacturaIVAResponsable(importe)
+
+class FactoryNoInscripto(FacturaFactory):
+    def crear_factura(self, importe):
+        return FacturaIVANoInscripto(importe)
+
+class FactoryExento(FacturaFactory):
+    def crear_factura(self, importe):
+        return FacturaIVAExento(importe)
+
+#equivale al code_client
+def generar_factura(factory, importe):
+    factura = factory.crear_factura(importe)
+    print(factura)
+
+if __name__ == "__main__":
+    print()
+    generar_factura(FactoryResponsable(), 100)
+    print()
+    generar_factura(FactoryNoInscripto(), 500)
+    print()
+    generar_factura(FactoryExento(), 1000)
+
+print()
+print("Consigna 6:")
