@@ -392,3 +392,49 @@ if __name__ == "__main__":
     builder.product.list_parts()
 
     print("\n")
+
+print()
+print("Consigna 6:")
+
+import copy
+import time
+
+class SelfReferencingEntity:
+    def __init__(self):
+        self.parent = None
+    
+    def set_parent(self, parent):
+        self.parent = parent
+
+class SomeComponent:
+    def __init__(self, some_int, some_list_of_objects, some_circular_ref):
+        self.some_int = some_int
+        self.some_list_of_objects = some_list_of_objects
+        self.some_circular_ref = some_circular_ref
+    
+    def __copy__(self):
+        some_list_of_objects = copy.copy(self.some_list_of_objects)
+        some_circular_ref = copy.copy(self.some_circular_ref)
+        new = self.__class__(self.some_int, some_list_of_objects, some_circular_ref)
+        new.__dict__.update(self.__dict__)
+        return new
+
+    def __deepcopy__(self, memo=None):
+        some_list_of_objects = copy.deepcopy(self.some_list_of_objects, memo)
+        some_circular_ref = copy.deepcopy(self.some_circular_ref, memo)
+        new = self.__class__(self.some_int, some_list_of_objects, some_circular_ref)
+        new.__dict__.update(self.__dict__)
+        return new
+    
+if __name__ == "__main__":
+
+    initial_component = SomeComponent(42, [1, 2, 3], SelfReferencingEntity())
+
+    for _ in range(20):
+        initial_component = copy.deepcopy(initial_component)
+        print(f"Generando anidamiento {_ + 1}")
+    
+    time.sleep(1)
+    print("Ha pasado 1 segundo...")
+    time.sleep(1)
+    print("Se procesó! Tiempo: 2 segundos.")
