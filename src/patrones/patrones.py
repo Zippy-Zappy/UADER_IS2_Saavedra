@@ -108,7 +108,7 @@ class Factory(ABC):
         producto = self.metodo_factory()
 
         #se usa el producto
-        resultado = f"Se ha completado la transacción."
+        resultado = f"{producto.mostrar_envio()}."
 
         return resultado
 
@@ -120,15 +120,15 @@ class TipoEnvio(ABC):
         pass
 
 class ConcreteFactory1(Factory):
-    def mostrar_envio(self) -> TipoEnvio:
+    def metodo_factory(self) -> TipoEnvio:
         return EntregaDelivery()
     
 class ConcreteFactory2(Factory):
-    def mostrar_envio(self) -> TipoEnvio:
+    def metodo_factory(self) -> TipoEnvio:
         return EntregaCliente()
 
 class ConcreteFactory3(Factory):
-    def mostrar_envio(self) -> TipoEnvio:
+    def metodo_factory(self) -> TipoEnvio:
         return EntregaMostrador()
 
 
@@ -157,14 +157,14 @@ def client_code(creator: Factory) -> None:
     the base interface, you can pass it any creator's subclass.
     """
     #Yo soy un mero intermediario tipo FACTORY que no se que es lo que estoy creando, pero lo creo.
-    print(f"Operación completa. {creator.mostrar_envio()}", end="")
+    print(f"Transacción completa. {creator.mostrar_envio()}", end="")
 
 if __name__ == "__main__":
     print("Entrega por delivery:")
-    client_code(EntregaDelivery())
+    client_code(ConcreteFactory1())
     print()
     print("\nEntrega por mostrador:")
-    client_code(EntregaMostrador())
+    client_code(ConcreteFactory2())
     print()
     print("\nUsted se dirigirá al local.")
-    client_code(EntregaCliente())
+    client_code(ConcreteFactory3())
