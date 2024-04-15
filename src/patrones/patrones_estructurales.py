@@ -108,3 +108,71 @@ que representen esa configuración y la muestren. Luego agregue un subconjunto
 opcional adicional también formado por cuatro piezas. (Use el patrón
 composite).
 '''
+from typing import List
+
+class ComponenteComposite(ABC):
+    @abstractmethod
+    def mostrar(self) -> str:
+        pass
+
+class Pieza(ComponenteComposite): #clase concreta para piezas individuales
+    def __init__(self, nombre) -> None:
+        self.nombre = nombre
+
+    def mostrar(self) -> str:
+        return f"{self.nombre}"
+
+class Subconjunto(ComponenteComposite): #clase concreta para subconjuntos
+    def __init__(self, nombre) -> None:
+        self.nombre = nombre
+        self._children: List[ComponenteComposite] = [] 
+    
+    def agregar(self, componente: ComponenteComposite) -> None:
+        self._children.append(componente)
+    
+    def eliminar(self, componente: ComponenteComposite) -> None:
+        self._children.remove(componente)
+    
+    def mostrar(self) -> str:
+        resultados = []
+        for child in self._children:
+            resultados.append(child.mostrar())
+        return f"{self.nombre}{resultados}"
+    
+if __name__ == "__main__":
+    pieza1 = Pieza("Pieza A")
+    pieza2 = Pieza("Pieza B")
+    pieza3 = Pieza("Pieza C")
+    pieza4 = Pieza("Pieza D")
+    subconjunto1 = Subconjunto("Subconjunto A")
+    subconjunto1.agregar(pieza1)
+    subconjunto1.agregar(pieza2)
+    subconjunto1.agregar(pieza3)
+    subconjunto1.agregar(pieza4)
+    
+    pieza5 = Pieza("Pieza E")
+    pieza6 = Pieza("Pieza F")
+    pieza7 = Pieza("Pieza G")
+    pieza8 = Pieza("Pieza H")
+    subconjunto2 = Subconjunto("Subconjunto B")
+    subconjunto2.agregar(pieza5)
+    subconjunto2.agregar(pieza6)
+    subconjunto2.agregar(pieza7)
+    subconjunto2.agregar(pieza8)
+
+    pieza9 = Pieza("Pieza I")
+    pieza10 = Pieza("Pieza J")
+    pieza11 = Pieza("Pieza K")
+    pieza12 = Pieza("Pieza L")
+    subconjunto3 = Subconjunto("Subconjunto C")
+    subconjunto3.agregar(pieza9)
+    subconjunto3.agregar(pieza10)
+    subconjunto3.agregar(pieza11)
+    subconjunto3.agregar(pieza12)
+
+    conjunto_principal = Subconjunto("Producto principal")
+    conjunto_principal.agregar(subconjunto1)
+    conjunto_principal.agregar(subconjunto2)
+    conjunto_principal.agregar(subconjunto3)
+
+    print(conjunto_principal.mostrar())
