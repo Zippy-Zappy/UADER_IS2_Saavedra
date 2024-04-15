@@ -58,4 +58,53 @@ if __name__ == "__main__":
     direccion_ip_test = "192.168.1.200"
     direccion_ip_fail = "190.168.0.254"
 
-    ping.execute(direccion_ip_test)
+    #ping.execute(direccion_ip_test)
+
+print()
+print("Consigna 2:")
+'''
+Para un producto láminas de acero de 0.5” de espesor y 1,5 metros de ancho
+dispone de dos trenes laminadores, uno que genera planchas de 5 mts y otro
+de 10 mts. Genere una clase que represente a las láminas en forma genérica al
+cual se le pueda indicar que a que tren laminador se enviará a producir. (Use el
+patrón bridge en la solución).
+'''
+class TrenBridge(ABC): #Implementation
+    @abstractmethod
+    def mostrar_tren(self) -> str:
+        pass
+
+class Tren: #Abstraction
+    def __init__(self, tren_laminador: TrenBridge) -> None:
+        self.tren_laminador = tren_laminador
+    
+    def mostrar(self) -> str:
+        return f"Se enviará a: {self.tren_laminador.mostrar_tren()}"
+
+class TrenLaminadorCinco(TrenBridge): #ConcreteImplementation
+    def mostrar_tren(self) -> str:
+        return f"Tren Laminador de 5 metros."
+
+class TrenLaminadorDiez(TrenBridge): #ConcreteImplementation
+    def mostrar_tren(self) -> str:
+        return f"Tren Laminador de 10 metros."
+
+if __name__ == "__main__":
+    implementacion_cinco = TrenLaminadorCinco()
+    lamina_cinco = Tren(implementacion_cinco)
+    print(lamina_cinco.mostrar())
+
+    implementacion_diez = TrenLaminadorDiez()
+    lamina_diez = Tren(implementacion_diez)
+    print(lamina_diez.mostrar())
+
+print()
+print("Consigna 3:")
+'''
+Represente la lista de piezas componentes de un ensamblado con sus
+relaciones jerárquicas. Empiece con un producto principal formado por tres
+sub-conjuntos los que a su vez tendrán cuatro piezas cada uno. Genere clases
+que representen esa configuración y la muestren. Luego agregue un subconjunto
+opcional adicional también formado por cuatro piezas. (Use el patrón
+composite).
+'''
