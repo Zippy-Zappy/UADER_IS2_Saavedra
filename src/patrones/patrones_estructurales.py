@@ -176,3 +176,78 @@ if __name__ == "__main__":
     conjunto_principal.agregar(subconjunto3)
 
     print(conjunto_principal.mostrar())
+
+print()
+print("Consigna 4:")
+'''
+Implemente una clase que permita a un número cualquiera imprimir su valor,
+luego agregarle sucesivamente.
+a. Sumarle 2.
+b. Multiplicarle por 2.
+c. Dividirlo por 3.
+Mostrar los resultados de la clase sin agregados y con la invocación anidada a
+las clases con las diferentes operaciones. Use un patrón decorator para
+implementar.
+'''
+class Component():
+    def mostrar_numero(self) -> int:
+        pass
+
+
+class ConcreteComponent(Component):
+    def __init__(self, numero):
+        self.numero = numero
+
+    def mostrar_numero(self) -> int:
+        return self.numero
+
+
+class Decorator(Component):
+    _component: Component = None
+
+    def __init__(self, component: Component) -> None:
+        self._component = component
+
+    @property
+    def component(self) -> Component:
+        return self._component
+
+    def mostrar_numero(self) -> int:
+        return self._component.mostrar_numero()
+
+
+class SumarleDos(Decorator):
+    def operation(self) -> int:
+        return self.component.mostrar_numero() + 2
+
+
+class MultiplicarleDos(Decorator):
+    def mostrar_numero(self) -> int:
+        return self.component.mostrar_numero() * 2
+
+class DividirleTres(Decorator):
+    def mostrar_numero(self) -> int:
+        return self.component.mostrar_numero() / 3
+
+
+def client_code(component: Component) -> None:
+    print(f"RESULT: {component.mostrar_numero()}", end="")
+
+
+if __name__ == "__main__":
+    # This way the client code can support both simple components...
+    numero = 10
+    num_base_decorado = ConcreteComponent(numero)
+    num_decorado = DividirleTres(MultiplicarleDos(SumarleDos(numero)))
+    # ...as well as decorated ones.
+    #
+    # Note how decorators can wrap not only simple components but the other
+    # decorators as well.
+    decorator1 = SumarleDos(num_base_decorado)
+    decorator2 = MultiplicarleDos(decorator1)
+    decorator3 = DividirleTres(decorator2)
+    
+    client_code(decorator3)
+
+    print("\n")
+   #debería funcionar así? ...
