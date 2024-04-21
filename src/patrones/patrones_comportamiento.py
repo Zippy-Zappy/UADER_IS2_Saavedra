@@ -92,21 +92,74 @@ def client_code(handler: ManejadorNumeros) -> None:
 
 
 if __name__ == "__main__":
-    # monkey = MonkeyHandler()
-    # squirrel = SquirrelHandler()
-    # dog = DogHandler()
     primos = ManejadorPrimo()
     pares = ManejadorPares()
 
     primos.set_siguiente(pares)
-    # monkey.set_next(squirrel).set_next(dog)
     client_code(primos)
-    # # The client should be able to send a request to any handler, not just the
-    # # first one in the chain.
-    # print("Chain: Monkey > Squirrel > Dog\n")
-    # client_code(monkey)
-    # print("\n")
 
-    # print("Subchain: Squirrel > Dog\n")
-    # client_code(squirrel)
-    # print("\n")
+print()
+print("Consigna 2:")
+'''
+Implemente una clase bajo el patrón iterator que almacene una cadena de
+caracteres y permita recorrerla en sentido directo y reverso.
+'''
+from collections.abc import Iterable, Iterator
+from typing import Any, List
+
+class AlphabeticalOrderIterator(Iterator):
+    _position: int = None
+
+    _reverse: bool = False
+
+    def __init__(self, collection: CadenaCollecion, reverse: bool = False) -> None:
+        self._collection = collection
+        self._reverse = reverse
+        self._position = -1 if reverse else 0
+
+    def __next__(self):
+        """
+        The __next__() method must return the next item in the sequence. On
+        reaching the end, and in subsequent calls, it must raise StopIteration.
+        """
+        try:
+            value = self._collection[self._position]
+            self._position += -1 if self._reverse else 1
+        except IndexError:
+            raise StopIteration()
+
+        return value
+
+
+class CadenaCollecion(Iterable):
+
+    def __init__(self, collection: List[Any] = []) -> None:
+        self._collection = collection
+
+    def __iter__(self) -> AlphabeticalOrderIterator:
+        """
+        The __iter__() method returns the iterator object itself, by default we
+        return the iterator in ascending order.
+        """
+        return AlphabeticalOrderIterator(self._collection)
+
+    def get_iterador_reverso(self) -> AlphabeticalOrderIterator:
+        return AlphabeticalOrderIterator(self._collection, True)
+
+    def agregar_objeto(self, item: Any):
+        self._collection.append(item)
+
+
+if __name__ == "__main__":
+    coleccion = CadenaCollecion()
+    coleccion.agregar_objeto("Primero")
+    coleccion.agregar_objeto("Segundo")
+    coleccion.agregar_objeto("Tercero")
+
+    print("Recorrido directo:")
+    print("\n".join(coleccion))
+    print("")
+
+    print("Recorrido reverso:")
+    print("\n".join(coleccion.get_iterador_reverso()), end="")
+    print("\n")
